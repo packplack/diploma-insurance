@@ -97,6 +97,7 @@
                             required
                         />
                     </b-form-group>
+                    <b-alert variant="danger" :show="!!loginError">{{ loginError }}</b-alert>
                     <b-form-row>
                         <b-button size="lg" type="submit" variant="primary">Зарегистрироваться</b-button>
                     </b-form-row>
@@ -142,6 +143,7 @@ export default {
                 email: '',
                 password: ''
             },
+            loginError: null,
             register: {
                 firstName: 'e',
                 lastName: 'z',
@@ -157,11 +159,17 @@ export default {
             event.preventDefault();
             
             if (this.register.password === this.register.extraPassword) {
-                axios
-                    .post('/api/customers/register', this.register)
-                    .then((res) => {
+                this.loginError = null;
+
+                axios.post('/api/customers/register', this.register)
+                    .then(res => {
                         console.log(res)
                     })
+                    .catch(err => {
+                        if ('error' in err.response.data) {
+                            this.loginError = err.response.data.error;
+                        }
+                    });
             }
         },
         performLogin() {
