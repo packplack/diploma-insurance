@@ -1,0 +1,47 @@
+.cards-group {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+}
+
+.card {
+    background-color: #fff;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    border-radius: 15px;
+    padding: 10px;
+    transition: box-shadow 0.2s;
+    box-shadow: 8px 10px 20px 0px rgba(46, 61, 73, 0.15);
+    width: 450px;
+
+    p {
+        text-align: center;
+    }
+
+    .fas {
+        font-size: 120px;
+    }
+}
+
+.card > * {
+    margin: 35px 10px;
+}
+
+.card:hover {
+    box-shadow: 2px 4px 8px 0px rgba(46, 61, 73, 0.2);
+}
+
+form {
+    font-size: 20px;
+}
+
+button {
+    min-width: 150px;
+    margin: 15px auto 0 auto !important;
+}
+
+section {
+    max-width: 1600px;
+    margin: auto;
+}
