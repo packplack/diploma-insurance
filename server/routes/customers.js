@@ -1,4 +1,5 @@
 import express from 'express';
+import passport from '../auth';
 import uuid from 'uuid4';
 import passwordHash from 'password-hash';
 
@@ -34,6 +35,23 @@ router.post('/register', async (req, res) => {
     return res.json({ result: 'Пользователь успешно добавлен.' });
 });
 
-// router.post();
+router.post('/login', (req, res, next) => {
+    passport.authenticate('local', function(err, customer, info) {
+        if (info) {
+            res.status(401).json(info);
+        } else {
+            res.json({
+                message: 'Успешный вход в систему.',
+                customer: {
+                    id: customer.id,
+                    firstName: customer.first_name,
+                    lastName: customer.last_name,
+                    email: customer.email,
+                    phoneNumber: customer.phone_number
+                }
+            });
+        }
+    })(req, res, next);
+});
 
 export default router;

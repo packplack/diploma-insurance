@@ -97,7 +97,7 @@
                             required
                         />
                     </b-form-group>
-                    <b-alert variant="danger" :show="!!loginError">{{ loginError }}</b-alert>
+                    <b-alert variant="danger" :show="!!registerError">{{ registerError }}</b-alert>
                     <b-form-row>
                         <b-button size="lg" type="submit" variant="primary">Зарегистрироваться</b-button>
                     </b-form-row>
@@ -124,6 +124,7 @@
                             required
                         />
                     </b-form-group>
+                    <b-alert variant="danger" :show="!!loginError">{{ loginError }}</b-alert>
                     <b-form-row>
                         <b-button size="lg" type="submit" variant="success">Вход</b-button>
                     </b-form-row>
@@ -139,11 +140,6 @@ import axios from 'axios';
 export default {
     data() {
         return {
-            login: {
-                email: '',
-                password: ''
-            },
-            loginError: null,
             register: {
                 firstName: 'e',
                 lastName: 'z',
@@ -151,7 +147,13 @@ export default {
                 phoneNumber: '12345',
                 password: 'asd',
                 extraPassword: 'asd'
-            }
+            },
+            registerError: null,
+            login: {
+                email: 'ez@gmail.com',
+                password: 'asd'
+            },
+            loginError: null
         };
     },
     methods: {
@@ -159,7 +161,7 @@ export default {
             event.preventDefault();
             
             if (this.register.password === this.register.extraPassword) {
-                this.loginError = null;
+                this.registerError = null;
 
                 axios.post('/api/customers/register', this.register)
                     .then(res => {
@@ -167,13 +169,24 @@ export default {
                     })
                     .catch(err => {
                         if ('error' in err.response.data) {
-                            this.loginError = err.response.data.error;
+                            this.registerError = err.response.data.error;
                         }
                     });
             }
         },
-        performLogin() {
+        performLogin(event) {
+            event.preventDefault();
+            this.loginError = null;
 
+            axios.post('/api/customers/login', this.login)
+                .then(res => {
+                    console.log(res)
+                })
+                .catch(err => {
+                    if ('error' in err.response.data) {
+                        this.loginError = err.response.data.error;
+                    }
+                });
         }
     }
 };
