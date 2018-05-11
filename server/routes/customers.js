@@ -1,5 +1,6 @@
 import express from 'express';
 import uuid from 'uuid4';
+import passwordHash from 'password-hash';
 
 import dbConnection from '../db/connection';
 
@@ -15,6 +16,8 @@ router.post('/register', async (req, res) => {
         return res.status(409).json({ error: 'Пользователь с таким email уже существует.'})
     }
 
+    const hashedPassword = passwordHash.generate(req.body.password);
+
     await dbConnection.query({    
         text: `INSERT INTO customers (
             id, 
@@ -25,7 +28,7 @@ router.post('/register', async (req, res) => {
             password
         ) 
         VALUES ($1, $2, $3, $4, $5, $6);`, 
-        values: [uuid(), req.body.firstName, req.body.lastName, req.body.email, req.body.phoneNumber, req.body.password]
+        values: [uuid(), req.body.firstName, req.body.lastName, req.body.email, req.body.phoneNumber, hashedPassword]
     });
 
     return res.json({ result: 'Пользователь успешно добавлен.' });
