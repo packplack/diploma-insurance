@@ -6,10 +6,12 @@ import bodyParser from 'body-parser';
 
 import serverHeadersMiddleware from './middlewares/server-headers';
 import logger from './init/bunyan-logger';
+import initDatabaseTables from './db/init-database-tables';
 
 import customersRoutes from './routes/customers';
 
 const app = express();
+initDatabaseTables();
 
 const PORT = process.env.PORT || 5000;
 const HOST = '0.0.0.0';
