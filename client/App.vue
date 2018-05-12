@@ -1,17 +1,16 @@
 <template>
     <main>
-        <!-- <b-navbar toggleable="md" type="light" variant="info">
-            <img src="./img/app-icon.png" alt="">
-            <b-navbar-brand  class="" href="/">БЕЛСК-СТРАХ</b-navbar-brand>
-        </b-navbar> -->
         <router-view/>
     </main>
 </template>
 
 <script>
 export default {
-
-}
+    created() {
+        this.$store.commit('GET_USER_FROM_LOCALE_STORAGE');
+        this.$store.commit('GET_CUSTOMER_FROM_LOCALE_STORAGE');
+    }
+};
 </script>
 
 <style lang="scss">

@@ -8,7 +8,7 @@ import logger from '../init/bunyan-logger';
 
 const router = express.Router();
 
-router.post('/register', async (req, res) => {
+router.post('/register', async (req, res, next) => {
     const payload = req.body;
 
     const usersWithSimilarEmail = await dbConnection.query({    
@@ -19,6 +19,7 @@ router.post('/register', async (req, res) => {
     if (usersWithSimilarEmail.rowCount) {
         return res.status(409).json({ error: 'Пользователь с таким email уже существует.'})
     }
+    
     const hashedPassword = passwordHash.generate(payload.password);
     const uuid = uuid4();
 
@@ -43,27 +44,34 @@ router.post('/register', async (req, res) => {
         ]
     });
 
-    req.logIn(customer, (error) => {
-        if (error) logger.error(error);
+    passport.authenticate('local', (err, customer, info) => {
 
-        res.json({ 
-            result: 'Пользователь успешно добавлен.',
-            customer: {
-                id: uuid,
-                firstName: payload.first_name,
-                lastName: payload.last_name,
-                email: payload.email,
-                phoneNumber: payload.phone_number
-            }
+        req.logIn(customer, (error) => {
+            if (error) logger.error(error);
+    
+            res.json({ 
+                result: 'Пользователь успешно добавлен.',
+                customer: {
+                    id: uuid,
+                    firstName: payload.firstName,
+                    lastName: payload.lastName,
+                    email: payload.email,
+                    phoneNumber: payload.phoneNumber
+                }
+            });
+
         });
-    });
+
+    })(req, res, next);
 });
 
 router.post('/login', (req, res, next) => {
     passport.authenticate('local', (err, customer, info) => {
+
         if (info) {
             res.status(401).json(info);
         } else {
+
             req.logIn(customer, (error) => {
                 if (error) logger.error(error);
 
@@ -77,8 +85,11 @@ router.post('/login', (req, res, next) => {
                         phoneNumber: customer.phone_number
                     }
                 });
+
             });
+
         }
+
     })(req, res, next);
 });
 
@@ -87,7 +98,7 @@ router.use((req, res, next) => {
         res.status(401).json({ error: 'Необходима авторизация.' });
         return;
     }
-    
+
     next();
 });
 

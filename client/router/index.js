@@ -2,11 +2,12 @@ import Vue from 'vue';
 import VueRouter from 'vue-router';
 
 import store from '../store';
+import localStorageHandler from '../helpers/local-storage-handler';
 
 import Index from '../views/Index.vue';
-import CustomerCabinet from '../views/CustomerCabinet.vue';
-import UserLogin from '../views/UserLogin.vue';
-import UserCabinet from '../views/UserCabinet.vue';
+import CustomerCabinet from '../views/customer/CustomerCabinet.vue';
+import UserLogin from '../views/user/UserLogin.vue';
+import UserCabinet from '../views/user/UserCabinet.vue';
 
 Vue.use(VueRouter);
 
@@ -47,7 +48,7 @@ router.beforeEach((to, from, next) => {
     /* 
         CUSTOMER doesn't perform login and tries to enter personal cabinet.
     */
-    if (to.path.startsWith('/customer-cabinet') && !store.getters.customer) {
+    if (to.path.startsWith('/customer-cabinet') && !store.getters.customer && !localStorageHandler.get('customer')) {
         router.push({ name: 'index' });
         return;
     }
@@ -55,7 +56,7 @@ router.beforeEach((to, from, next) => {
     /* 
         USER doesn't perform login and tries to enter personal cabinet.
     */
-    if (to.path.startsWith('/user-cabinet') && !store.getters.user) {
+    if (to.path.startsWith('/user-cabinet') && !store.getters.user && !localStorageHandler.get('user')) {
         router.push({ name: 'index' });
         return;
     }
