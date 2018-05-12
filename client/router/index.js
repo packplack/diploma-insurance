@@ -6,10 +6,21 @@ import localStorageHandler from '../helpers/local-storage-handler';
 
 import Index from '../views/Index.vue';
 import CustomerCabinet from '../views/customer/CustomerCabinet.vue';
+import MyInsurances from '../views/customer/children/MyInsurances.vue';
+import NewInsurance from '../views/customer/children/NewInsurance.vue';
+import CustomerProfile from '../views/customer/children/CustomerProfile.vue';
 import UserLogin from '../views/user/UserLogin.vue';
 import UserCabinet from '../views/user/UserCabinet.vue';
+import Insurances from '../views/user/children/Insurances.vue';
+import AddNewUser from '../views/user/children/AddNewUser.vue';
+import AllUsers from '../views/user/children/AllUsers.vue';
+import Stats from '../views/user/children/Stats.vue';
+import UserProfile from '../views/user/children/UserProfile.vue';
 
 Vue.use(VueRouter);
+
+const nameCustomerChildRoute = (name) => `customer-${name}`;
+const nameUserChildRoute = (name) => `user-${name}`;
 
 const router = new VueRouter({
     mode: 'history',
@@ -23,6 +34,23 @@ const router = new VueRouter({
             path: '/customer-cabinet',
             name: 'customer-cabinet',
             component: CustomerCabinet,
+            children: [
+                {
+                    path: 'my-insurances',
+                    name: nameCustomerChildRoute('my-insurances'),
+                    component: MyInsurances
+                },
+                {
+                    path: 'new-insurance',
+                    name: nameCustomerChildRoute('new-insurance'),
+                    component: NewInsurance
+                },
+                {
+                    path: 'my-profile',
+                    name: nameCustomerChildRoute('my-profile'),
+                    component: CustomerProfile
+                }
+            ]
         },
         {
             path: '/user-login',
@@ -33,6 +61,33 @@ const router = new VueRouter({
             path: '/user-cabinet',
             name: 'user-cabinet',
             component: UserCabinet,
+            children: [
+                {
+                    path: 'insurances',
+                    name: nameUserChildRoute('insurances'),
+                    component: Insurances
+                },
+                {
+                    path: 'add-new-user',
+                    name: nameUserChildRoute('add-new-user'),
+                    component: AddNewUser
+                },
+                {
+                    path: 'all-users',
+                    name: nameUserChildRoute('all-users'),
+                    component: AllUsers
+                },
+                {
+                    path: 'stats',
+                    name: nameUserChildRoute('stats'),
+                    component: Stats
+                },
+                {
+                    path: 'my-profile',
+                    name: nameUserChildRoute('my-profile'),
+                    component: UserProfile
+                }
+            ]
         },
         {
             path: '*',

@@ -64,3 +64,7 @@ section {
 html, body, main {
     height: 100%;
 }
+
+a:focus {
+    outline: none;
+}
