@@ -99,7 +99,9 @@
                     </b-form-group>
                     <b-alert variant="danger" :show="!!registerError">{{ registerError }}</b-alert>
                     <b-form-row>
-                        <b-button size="lg" type="submit" variant="primary">Зарегистрироваться</b-button>
+                        <b-button size="lg" type="submit" variant="primary">
+                            <i class="far fa-address-card"></i> Зарегистрироваться
+                        </b-button>
                     </b-form-row>
                 </b-form>
             </div>
@@ -126,7 +128,9 @@
                     </b-form-group>
                     <b-alert variant="danger" :show="!!loginError">{{ loginError }}</b-alert>
                     <b-form-row>
-                        <b-button size="lg" type="submit" variant="success">Вход</b-button>
+                        <b-button size="lg" type="submit" variant="success">
+                            <i class="fas fa-sign-in-alt"></i> Вход
+                        </b-button>
                     </b-form-row>
                 </b-form>
             </div>
@@ -157,37 +161,42 @@ export default {
         };
     },
     methods: {
-        performRegister(event) {
+        handleSuccess(response) {
+            this.$store.commit('SAVE_CUSTOMER', response.data.customer);
+            this.$router.push({ name: 'customer-cabinet' });
+        },
+        async performRegister(event) {
             event.preventDefault();
-            
-            if (this.register.password === this.register.extraPassword) {
-                this.registerError = null;
 
-                axios.post('/api/customers/register', this.register)
-                    .then(res => {
-                        console.log(res)
-                    })
-                    .catch(err => {
-                        if ('error' in err.response.data) {
-                            this.registerError = err.response.data.error;
-                        }
-                    });
+            if (this.register.password !== this.register.extraPassword) {
+                this.registerError = 'Пароли не совпадают.';
+                return;
+            }
+
+            this.registerError = null;
+
+            try {
+                const response = await axios.post('/api/customers/register', this.register);
+                this.handleSuccess(response);
+            } catch (error) {
+                if ('error' in error.response.data) {
+                    this.registerError = error.response.data.error;
+                }
             }
         },
-        performLogin(event) {
+        async performLogin(event) {
             event.preventDefault();
             this.loginError = null;
 
-            axios.post('/api/customers/login', this.login)
-                .then(res => {
-                    console.log(res)
-                })
-                .catch(err => {
-                    if ('error' in err.response.data) {
-                        this.loginError = err.response.data.error;
-                    }
-                });
-        }
+            try {
+                const response = await axios.post('/api/customers/login', this.login);
+                this.handleSuccess(response);
+            } catch (error) {
+                if ('error' in error.response.data) {
+                    this.loginError = error.response.data.error;
+                }
+            }
+        },
     }
 };
 
@@ -239,10 +248,6 @@ section {
     i, h3 {
         color: #97679D;
     }
-}
-
-.login-form {
-    width: 400px;
 }
 
 .action-cards {

@@ -30,8 +30,8 @@ INSERT INTO customers (
 ) 
 VALUES (
     '57c8dbfb-2fc0-4b65-b32e-cdb7289d97b2',
-    'egor',
-    'zekov',
+    'e',
+    'z',
     'ez@gm.com',
     '+375251232323',
     'psqd'

@@ -1,6 +1,6 @@
 import express from 'express';
 import passport from '../auth';
-import uuid from 'uuid4';
+import uuid4 from 'uuid4';
 import passwordHash from 'password-hash';
 
 import dbConnection from '../db/connection';
@@ -8,16 +8,18 @@ import dbConnection from '../db/connection';
 const router = express.Router();
 
 router.post('/register', async (req, res) => {
+    const payload = req.body;
+
     const usersWithSimilarEmail = await dbConnection.query({    
         text: 'SELECT id FROM customers WHERE email = $1', 
-        values: [req.body.email]
+        values: [payload.email]
     });
 
     if (usersWithSimilarEmail.rowCount) {
         return res.status(409).json({ error: 'Пользователь с таким email уже существует.'})
     }
-
-    const hashedPassword = passwordHash.generate(req.body.password);
+    const hashedPassword = passwordHash.generate(payload.password);
+    const uuid = uuid4();
 
     await dbConnection.query({    
         text: `INSERT INTO customers (
@@ -29,10 +31,26 @@ router.post('/register', async (req, res) => {
             password
         ) 
         VALUES ($1, $2, $3, $4, $5, $6);`, 
-        values: [uuid(), req.body.firstName, req.body.lastName, req.body.email, req.body.phoneNumber, hashedPassword]
+        values: [
+            uuid, 
+            payload.firstName, 
+            payload.lastName, 
+            payload.email, 
+            payload.phoneNumber, 
+            hashedPassword
+        ]
     });
 
-    return res.json({ result: 'Пользователь успешно добавлен.' });
+    return res.json({ 
+        result: 'Пользователь успешно добавлен.',
+        customer: {
+            id: uuid,
+            firstName: payload.first_name,
+            lastName: payload.last_name,
+            email: payload.email,
+            phoneNumber: payload.phone_number
+        }
+    });
 });
 
 router.post('/login', (req, res, next) => {
@@ -41,7 +59,7 @@ router.post('/login', (req, res, next) => {
             res.status(401).json(info);
         } else {
             res.json({
-                message: 'Успешный вход в систему.',
+                result: 'Успешный вход в систему.',
                 customer: {
                     id: customer.id,
                     firstName: customer.first_name,

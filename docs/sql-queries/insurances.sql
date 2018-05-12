@@ -28,7 +28,7 @@ VALUES (
     '57c8dbfb-2fc0-4b65-b32e-c2b7289d1234',
     '27c8dbfb-2fc0-4b65-b32e-cdb7289d97b2',
     'health',
-    '{"name":"azekov"}' -- TBD
+    '{"name":"ez"}' -- TBD
 );
 
 -- 1.2 Perform a review

@@ -18,10 +18,10 @@
     p {
         text-align: center;
     }
+}
 
-    .fas {
-        font-size: 120px;
-    }
+.card > .fas {
+    font-size: 120px;
 }
 
 .card > * {
@@ -36,12 +36,24 @@ form {
     font-size: 20px;
 }
 
+.login-form {
+    width: 400px;
+}
+
 button {
     min-width: 150px;
     margin: 15px auto 0 auto !important;
+
+    i {
+        margin-right: 15px;
+    }
 }
 
 section {
     max-width: 1600px;
     margin: auto;
+}
+
+html, body, main {
+    height: 100%;
 }
