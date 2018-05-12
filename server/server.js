@@ -27,7 +27,11 @@ app.engine('html', ejs.renderFile);
 app.set('views', VIEWS_PATH);
 app.set('view engine', 'html');
 
-app.use(expressSession({ secret: 'somesecret' }));
+app.use(expressSession({ 
+    secret: 'somesecret',
+    resave: true,
+    saveUninitialized: true
+}));
 app.use(passport.initialize());
 app.use(passport.session());
 

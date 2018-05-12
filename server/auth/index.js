@@ -44,10 +44,12 @@ passport.use(new LocalStrategy({
 ));
 
 passport.serializeUser(function(customer, done) {
+    console.log('serialize');
     done(null, customer.id);
 });
   
 passport.deserializeUser(async function(id, done) {
+    console.log('deserialize');
     const customerData = await dbConnection.query({    
         text: 'SELECT * FROM customers WHERE id = $1', 
         values: [id]

@@ -1,6 +1,6 @@
 <template>
     <section>
-        <h2 class="slogan">Поможем с <b>любым</b> видом страхования:</h2>
+        <!-- <h2 class="slogan">Поможем с <b>любым</b> видом страхования:</h2>
         <div class="cards-group">
             <div class="card way-card auto">
                 <i class="fas fa-car"></i>
@@ -38,7 +38,7 @@
                 <i class="fas fa-percent"></i>
                 <h3>Скидки и акции</h3>
             </div>
-        </div>
+        </div> -->
         <h2 class="slogan">Начните пользоваться <b>прямо сейчас</b>:</h2>
         <div class="cards-group action-cards">
             <div class="card">
