@@ -33,6 +33,11 @@ passport.use(new LocalStrategy({
 
         logger.info(`AUTH. Customer ${customer.email} entered valid password.`);
 
+        await dbConnection.query({    
+            text: 'UPDATE customers SET last_login_at = NOW() WHERE email = $1', 
+            values: [username]
+        });
+
         return done(null, customer);
 
     }

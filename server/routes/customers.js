@@ -28,9 +28,10 @@ router.post('/register', async (req, res) => {
             last_name, 
             email, 
             phone_number, 
-            password
+            password,
+            last_login_at
         ) 
-        VALUES ($1, $2, $3, $4, $5, $6);`, 
+        VALUES ($1, $2, $3, $4, $5, $6, NOW());`, 
         values: [
             uuid, 
             payload.firstName, 
