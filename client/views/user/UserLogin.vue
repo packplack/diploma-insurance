@@ -54,6 +54,8 @@
 </template>
 
 <script>
+import axios from 'axios';
+
 export default {
     data() {
         return {
@@ -62,8 +64,8 @@ export default {
             secretWordError: null,
             canUserLoginFormBeShown: false,
             login: {
-                email: '',
-                password: ''
+                email: 'yabelski@gmail.com',
+                password: 'password'
             },
             loginError: null
         };
@@ -92,8 +94,9 @@ export default {
                 const response = await axios.post('/api/users/login', this.login);
 
                 this.$store.commit('SAVE_USER', response.data.user);
-                this.$router.push({ name: 'user-cabinet' });
+                this.$router.push({ name: 'user-insurances' });
             } catch (error) {
+                console.log(error);
                 if ('error' in error.response.data) {
                     this.loginError = error.response.data.error;
                 }

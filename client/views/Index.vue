@@ -180,11 +180,11 @@ export default {
     },
     methods: {
         goToCustomerCabinet() {
-            this.$router.push({ name: 'customer-cabinet' });
+            this.$router.push({ name: 'customer-my-insurances' });
         },
         handleSuccess(response) {
             this.$store.commit('SAVE_CUSTOMER', response.data.customer);
-            this.$router.push({ name: 'customer-cabinet' });
+            this.goToCustomerCabinet();
         },
         async performRegister(event) {
             event.preventDefault();

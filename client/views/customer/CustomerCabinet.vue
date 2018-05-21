@@ -15,7 +15,7 @@
                     <b-dropdown-item :to="{ name: 'customer-my-profile' }">
                         <i class="fas fa-id-card"></i> Профиль
                     </b-dropdown-item>
-                    <b-dropdown-item>
+                    <b-dropdown-item @click="logout">
                         <i class="fas fa-sign-out-alt"></i> Выйти
                     </b-dropdown-item>
                 </b-nav-item-dropdown>
@@ -33,9 +33,16 @@ export default {
     computed: {
         ...mapGetters(['customer', 'customerFullName']),
     },
-    async created() {
-        const response = await axios.get('/api/customers/get-my-insurances');
-        console.log(response);
+    methods: {
+        async logout() {
+            try {
+                const response = await axios.get('/api/customers/logout');
+            } catch (error) {
+                console.log(error);
+            }
+            this.$store.commit('RESET_CUSTOMER');
+            this.$router.push({ name: 'index' });
+        }
     }
 };
 </script>

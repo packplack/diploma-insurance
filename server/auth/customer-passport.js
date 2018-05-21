@@ -1,13 +1,14 @@
-import passport from 'passport';
 import passportLocal from 'passport-local';
 import passwordHash from 'password-hash';
 
+import passport from './common-passport';
 import dbConnection from '../db/connection';
 import logger from '../init/bunyan-logger';
 
 const LocalStrategy = passportLocal.Strategy;
 
-passport.use(new LocalStrategy({
+passport.use('customer-local',
+    new LocalStrategy({
         usernameField: 'email',
         passwordField: 'password'
     },
@@ -39,25 +40,7 @@ passport.use(new LocalStrategy({
         });
 
         return done(null, customer);
-
     }
 ));
-
-passport.serializeUser(function(customer, done) {
-    console.log('serialize');
-    done(null, customer.id);
-});
-  
-passport.deserializeUser(async function(id, done) {
-    console.log('deserialize');
-    const customerData = await dbConnection.query({    
-        text: 'SELECT * FROM customers WHERE id = $1', 
-        values: [id]
-    });
-
-    if (customerData.rowCount) {
-        done(null, customerData.rows[0]);
-    }
-});
 
 export default passport;

@@ -10,7 +10,8 @@ import serverHeadersMiddleware from './middlewares/server-headers';
 import logger from './init/bunyan-logger';
 import initDatabaseTables from './db/init-database-tables';
 
-import customersRoutes from './routes/customers';
+import customerRoutes from './routes/customer-routes';
+import userRoutes from './routes/user-routes';
 
 const app = express();
 initDatabaseTables();
@@ -37,11 +38,10 @@ app.use(passport.session());
 
 app.use('/static', express.static(STATIC_PATH));
 
-app.use('/api/customers', customersRoutes);
+app.use('/api/customers', customerRoutes);
+app.use('/api/users', userRoutes);
 
 app.get('/', (req, res) => res.render('index'));
-
-// app.post();
 
 app.get('*', (req, res) => res.render('index'));
 
