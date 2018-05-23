@@ -8,64 +8,6 @@ import logger from '../init/bunyan-logger';
 
 const router = express.Router();
 
-router.post('/register', async (req, res, next) => {
-    const payload = req.body;
-
-    const usersWithSimilarEmail = await dbConnection.query({    
-        text: 'SELECT id FROM customers WHERE email = $1', 
-        values: [payload.email]
-    });
-
-    if (usersWithSimilarEmail.rowCount) {
-        return res.status(409).json({ error: 'Пользователь с таким email уже существует.'})
-    }
-    
-    const hashedPassword = passwordHash.generate(payload.password);
-    const uuid = uuid4();
-
-    await dbConnection.query({    
-        text: `INSERT INTO customers (
-            id, 
-            first_name, 
-            last_name, 
-            email, 
-            phone_number, 
-            password,
-            last_login_at
-        ) 
-        VALUES ($1, $2, $3, $4, $5, $6, NOW());`, 
-        values: [
-            uuid, 
-            payload.firstName, 
-            payload.lastName, 
-            payload.email, 
-            payload.phoneNumber, 
-            hashedPassword
-        ]
-    });
-
-    passport.authenticate('user-local', (err, cususertomer, info) => {
-        user.type = 'user';
-
-        req.logIn(customer, (error) => {
-            if (error) logger.error(error);
-    
-            res.json({ 
-                result: 'Пользователь успешно добавлен.',
-                customer: {
-                    id: uuid,
-                    firstName: payload.firstName,
-                    lastName: payload.lastName,
-                    email: payload.email,
-                    phoneNumber: payload.phoneNumber
-                }
-            });
-
-        });
-
-    })(req, res, next);
-});
-
 router.post('/login', (req, res, next) => {
     passport.authenticate('user-local', (err, user, info) => {
 
@@ -84,7 +26,9 @@ router.post('/login', (req, res, next) => {
                         firstName: user.first_name,
                         lastName: user.last_name,
                         email: user.email,
-                        phoneNumber: user.phone_number
+                        phoneNumber: user.phone_number,
+                        userRole: user.user_role,
+                        permissions: user.permissions
                     }
                 });
 
@@ -108,6 +52,65 @@ router.get('/logout', (req, res, next) => {
     logger.info(`AUTH. User ${req.user.email} performing LOGOUT.`);
     req.logout();
     res.json({ result: 'Сотрудник успешно вышел.' });
+});
+
+
+
+router.post('/create', async (req, res, next) => {
+    const payload = req.body;
+
+    const usersWithSimilarEmail = await dbConnection.query({    
+        text: 'SELECT id FROM users WHERE email = $1', 
+        values: [payload.email]
+    });
+
+    if (usersWithSimilarEmail.rowCount) {
+        return res.status(409).json({ error: 'Сотрудник с таким email уже существует.'})
+    }
+    
+    const hashedPassword = passwordHash.generate(payload.password);
+    const uuid = uuid4();
+
+    await dbConnection.query({    
+        text: `INSERT INTO users (
+            id, 
+            first_name, 
+            last_name, 
+            email, 
+            phone_number, 
+            password,
+            user_role,
+            permissions,
+            last_login_at
+        ) 
+        VALUES ($1, $2, $3, $4, $5, $6, $7, $8 NOW());`, 
+        values: [
+            uuid, 
+            payload.firstName, 
+            payload.lastName, 
+            payload.email, 
+            payload.phoneNumber, 
+            hashedPassword,
+            payload.userRole,
+            JSON.stringify(payload.permissions)
+        ]
+    });
+
+});
+
+router.get('/all', async (req, res, next) => {
+    const users = await dbConnection.query({    
+        text: `SELECT
+            first_name, 
+            last_name, 
+            email, 
+            phone_number, 
+            user_role,
+            permissions
+        FROM users;`
+    });
+
+    res.json(users.rows);
 });
 
 export default router;

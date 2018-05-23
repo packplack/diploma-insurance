@@ -1,7 +1,5 @@
 <template>
-    <div>
-        Stats
-    </div>
+
 </template>
 
 <script>

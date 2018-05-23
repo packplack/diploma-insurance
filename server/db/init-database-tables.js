@@ -2,6 +2,7 @@ import uuid4 from 'uuid4';
 import passwordHash from 'password-hash';
 
 import dbConnection from './connection';
+import permissions from '../auth/permissions';
 
 const initDatabaseTables = async () => {
     await dbConnection.query({ text: `
@@ -27,6 +28,7 @@ const initDatabaseTables = async () => {
         phone_number TEXT NOT NULL,
         password TEXT NOT NULL,
         user_role TEXT NOT NULL,
+        permissions JSON NOT NULL,
         created_by UUID,
         created_at TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT NOW(),
         last_login_at TIMESTAMP WITHOUT TIME ZONE,
@@ -36,7 +38,7 @@ const initDatabaseTables = async () => {
 
     const director = await dbConnection.query({    
         text: 'SELECT id FROM users WHERE user_role = $1',
-        values: ['director']
+        values: ['директор']
     });
 
     if (!director.rowCount) {
@@ -48,9 +50,10 @@ const initDatabaseTables = async () => {
                 email, 
                 phone_number, 
                 password,
-                user_role
+                user_role,
+                permissions
             ) 
-            VALUES ($1, $2, $3, $4, $5, $6, $7);`, 
+            VALUES ($1, $2, $3, $4, $5, $6, $7, $8);`, 
             values: [
                 uuid4(), 
                 'Евгений', 
@@ -58,7 +61,8 @@ const initDatabaseTables = async () => {
                 'yabelski@gmail.com', 
                 '375291234567', 
                 passwordHash.generate('password'),
-                'director'
+                'директор',
+                JSON.stringify(permissions)
             ]
         });
     }
