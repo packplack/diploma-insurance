@@ -10,22 +10,24 @@
         </tr>
         <tr>
             <td class="key-cell">Номер телефона:</td>
-            <td>{{ userData.phoneNumber || userData.phone_number }}</td>
+            <td>{{ userData.phoneNumber }}</td>
         </tr>
         <tr>
             <td class="key-cell">Роль пользователя:</td>
-            <td>{{ userData.userRole || userData.user_role }}</td>
+            <td>{{ userData.userRole }}</td>
         </tr>
         <tr>
             <td class="key-cell">Права:</td>
-            <td class="permissions-cell">
-                <b-badge 
-                    v-for="(action, index) in userData.permissions"
-                    variant="info"
-                    :key="index"
-                >
-                    {{ action }}
-                </b-badge>
+            <td>
+                <div class="permissions">
+                    <b-badge 
+                        v-for="(action, index) in userData.permissions"
+                        variant="info"
+                        :key="index"
+                    >
+                        {{ action }}
+                    </b-badge>
+                </div>
             </td>
         </tr>
     </table>
@@ -41,7 +43,7 @@ export default {
     },
     computed: {
         getFullName() {
-            return `${this.userData.firstName || this.userData.first_name} ${this.userData.lastName || this.userData.last_name}`;
+            return `${this.userData.firstName} ${this.userData.lastName}`;
         }
     }
 }
@@ -54,11 +56,17 @@ table {
         border: 1px solid black;
         padding: 15px 20px;
         text-align: center;
+        background-color: #fff;
     }
 
     .key-cell {
         background-color: #9ce9f4;
         font-weight: 600;
+    }
+
+    .permissions {
+        display: flex;
+        flex-direction: column;
     }
 }
 </style>
@@ -68,5 +76,6 @@ table {
     font-size: 15px;
     padding: 10px;
     margin: 5px;
+    font-weight: 400;
 }
 </style>

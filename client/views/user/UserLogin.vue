@@ -1,5 +1,6 @@
 <template>
     <section>
+
         <div v-if="!canUserLoginFormBeShown" class="card">
             <h3>Проверка доступа</h3>
             <b-form class="login-form" @submit="checkSecretWord">
@@ -21,35 +22,39 @@
                 </b-form-row>
             </b-form>
         </div>
-        <div v-else class="card">
-            <h3>Вход для сотрудников</h3>
-            <b-form  class="login-form" @submit="performLogin">
-                <b-form-group label="Email:">
-                    <b-form-input 
-                        type="email"
-                        v-model="login.email"
-                        placeholder="Введите email"
-                        size="lg"
-                        required
-                    />
-                </b-form-group>
-                <b-form-group label="Пароль:">
-                    <b-form-input 
-                        type="password"
-                        v-model="login.password"
-                        placeholder="Введите пароль"
-                        size="lg"
-                        required
-                    />
-                </b-form-group>
-                <b-alert variant="danger" :show="!!loginError">{{ loginError }}</b-alert>
-                <b-form-row>
-                    <b-button size="lg" type="submit" variant="success">
-                        <i class="fas fa-sign-in-alt"></i> Вход
-                    </b-button>
-                </b-form-row>
-            </b-form>
-        </div>
+
+        <transition enter-active-class="fadeIn">
+            <div v-if="canUserLoginFormBeShown" class="card">
+                <h3>Вход для сотрудников</h3>
+                <b-form  class="login-form" @submit="performLogin">
+                    <b-form-group label="Email:">
+                        <b-form-input 
+                            type="email"
+                            v-model="login.email"
+                            placeholder="Введите email"
+                            size="lg"
+                            required
+                        />
+                    </b-form-group>
+                    <b-form-group label="Пароль:">
+                        <b-form-input 
+                            type="password"
+                            v-model="login.password"
+                            placeholder="Введите пароль"
+                            size="lg"
+                            required
+                        />
+                    </b-form-group>
+                    <b-alert variant="danger" :show="!!loginError">{{ loginError }}</b-alert>
+                    <b-form-row>
+                        <b-button size="lg" type="submit" variant="success">
+                            <i class="fas fa-sign-in-alt"></i> Вход
+                        </b-button>
+                    </b-form-row>
+                </b-form>
+            </div>
+        </transition>
+
     </section>
 </template>
 
@@ -94,7 +99,7 @@ export default {
                 const response = await axios.post('/api/users/login', this.login);
 
                 this.$store.commit('SAVE_USER', response.data.user);
-                this.$router.push({ name: 'user-insurances' });
+                this.$router.push({ name: 'user-cabinet' });
             } catch (error) {
                 console.log(error);
                 if ('error' in error.response.data) {

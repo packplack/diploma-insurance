@@ -2,23 +2,18 @@
     <section>
         <b-navbar toggleable="md" type="dark" variant="info">
             <b-navbar-nav>
-                <b-nav-item :to="{ name: 'user-insurances' }">
-                    <i class="far fa-list-alt"></i> Страховки
-                </b-nav-item>
-                <b-nav-item :to="{ name: 'user-add-new-user' }">
-                    <i class="fas fa-user-plus"></i> Добавить сотрудника
-                </b-nav-item>
-                <b-nav-item :to="{ name: 'user-all-users' }">
-                    <i class="fas fa-users"></i> Все сотрудники
-                </b-nav-item>
-                <b-nav-item :to="{ name: 'user-stats' }">
-                    <i class="far fa-chart-bar"></i> Статистика
+                <b-nav-item 
+                    v-for="(item, index) in currentUserAllowedNavItems"
+                    :to="{ name: item.routeName }"
+                    :key="index"
+                >
+                    <i :class="item.iconClasses"></i> {{ item.text }}
                 </b-nav-item>
             </b-navbar-nav>
             <b-navbar-nav class="ml-auto">
                 <b-nav-item-dropdown right>
                     <em slot="button-content">{{ userFullName }} </em>
-                    <b-dropdown-item :to="{ name: 'user-my-profile' }">
+                    <b-dropdown-item :to="{ name: 'my-profile' }">
                         <i class="fas fa-id-card"></i> Профиль
                     </b-dropdown-item>
                     <b-dropdown-item @click="logout">
@@ -36,8 +31,37 @@ import axios from 'axios';
 import { mapGetters } from 'vuex';
 
 export default {
+    data() {
+        return {
+            navItems: [
+                {
+                    routeName: 'страховки-все',
+                    iconClasses: 'far fa-list-alt',
+                    text: 'Страховки'
+                },
+                {
+                    routeName: 'пользователи-создать',
+                    iconClasses: 'fas fa-user-plus',
+                    text: 'Добавить сотрудника'
+                },
+                {
+                    routeName: 'пользователи-все',
+                    iconClasses: 'fas fa-users',
+                    text: 'Все сотрудники'
+                },
+                {
+                    routeName: 'страховки-статистика',
+                    iconClasses: 'far fa-chart-bar',
+                    text: 'Статистика'
+                },
+            ]
+        };
+    },
     computed: {
         ...mapGetters(['user', 'userFullName']),
+        currentUserAllowedNavItems() {
+            return this.navItems.filter(item => this.user.permissions.includes(item.routeName));
+        }
     },
     methods: {
         async logout() {

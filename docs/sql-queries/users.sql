@@ -33,3 +33,18 @@ VALUES (
     '+375251232323',
     'psqd'
 ); 
+
+SELECT
+    u.first_name || ' ' || u.last_name as full_name, 
+    u.email, 
+    u.phone_number, 
+    u.user_role,
+    u.permissions,
+    c.created_by_full_name,
+    u.created_at
+FROM users as u LEFT JOIN (
+    SELECT
+        id,
+        first_name || ' ' || last_name as created_by_full_name
+    FROM users
+) as c on u.created_by = c.id;

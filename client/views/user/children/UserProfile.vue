@@ -1,8 +1,12 @@
 <template>
-    <div class="user-profile-view">
-        <h4>Ваш профиль:</h4>
-        <user-card :user-data="user"/>
-    </div>
+    <transition enter-active-class="fadeIn">
+        <div class="cabinet-view">
+            <div class="card profile-card">
+                <h4>Ваш профиль:</h4>
+                <user-card :user-data="user"/>
+            </div>
+        </div>
+    </transition>
 </template>
 
 <script>
@@ -21,11 +25,12 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.user-profile-view {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    height: calc(100% - 56px);
+.profile-card {
+    width: 600px;
+
+    h4 {
+        margin-bottom: 0;
+    }
 }
 </style>
+

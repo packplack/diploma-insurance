@@ -64,27 +64,27 @@ const router = new VueRouter({
             children: [
                 {
                     path: 'insurances',
-                    name: nameUserChildRoute('insurances'),
+                    name: 'страховки-все',
                     component: Insurances
                 },
                 {
                     path: 'add-new-user',
-                    name: nameUserChildRoute('add-new-user'),
+                    name: 'пользователи-создать',
                     component: AddNewUser
                 },
                 {
                     path: 'all-users',
-                    name: nameUserChildRoute('all-users'),
+                    name: 'пользователи-все',
                     component: AllUsers
                 },
                 {
                     path: 'stats',
-                    name: nameUserChildRoute('stats'),
+                    name: 'страховки-статистика',
                     component: Stats
                 },
                 {
                     path: 'my-profile',
-                    name: nameUserChildRoute('my-profile'),
+                    name: 'my-profile',
                     component: UserProfile
                 }
             ]

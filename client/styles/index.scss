@@ -68,3 +68,11 @@ html, body, main {
 a:focus {
     outline: none;
 }
+
+.cabinet-view {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: calc(100% - 56px);
+}
