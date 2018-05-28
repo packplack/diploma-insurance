@@ -50,7 +50,7 @@ export default {
         };
     },
     async created() {
-        const response = await axios.get('/api/users/all');
+        const response = await axios.get('/api/users/all-users');
         this.users = response.data.sort((left, right) => right.permissions.length - left.permissions.length);
     }
 }

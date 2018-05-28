@@ -61,7 +61,8 @@ router.get('/new-user-options', async (req, res, next) => {
     res.json({ permissions, userRoles });
 });
 
-router.get('/all', async (req, res, next) => {
+
+router.get('/all-users', async (req, res, next) => {
     if (!req.user.permissions.includes('пользователи-все')) {
         return res.status(403).json({ error: 'У Вас нет прав на данную операцию.' });
     }
@@ -86,7 +87,8 @@ router.get('/all', async (req, res, next) => {
     res.json(users.rows);
 });
 
-router.post('/create', async (req, res, next) => {
+
+router.post('/create-user', async (req, res, next) => {
     if (!req.user.permissions.includes('пользователи-создать')) {
         return res.status(403).json({ error: 'У Вас нет прав на данную операцию.' });
     }
@@ -135,5 +137,17 @@ router.post('/create', async (req, res, next) => {
     res.json({ result: 'Сотрудник успешно добавлен.' });
 
 });
+
+
+router.get('/all-insurances', async (req, res, next) => {
+    if (!req.user.permissions.includes('страховки-все')) {
+        return res.status(403).json({ error: 'У Вас нет прав на данную операцию.' });
+    }
+
+    
+
+    res.json({ permissions, userRoles });
+});
+
 
 export default router;

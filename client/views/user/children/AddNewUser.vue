@@ -138,7 +138,7 @@ export default {
             }
 
             try {
-                const response = await axios.post('/api/users/create', this.params);
+                const response = await axios.post('/api/users/create-user', this.params);
                 this.formSuccess = response.data.result;
 
                 setTimeout(() => {
