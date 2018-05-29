@@ -8,6 +8,8 @@ import logger from '../init/bunyan-logger';
 
 const router = express.Router();
 
+const getRandomInsurancePrice = () => Math.floor(Math.random() * (80 - 20) + 20, 2);
+
 router.post('/register', async (req, res, next) => {
     const payload = req.body;
 
@@ -139,14 +141,15 @@ router.post('/create-insurance', async (req, res, next) => {
             customer_id, 
             type,
             price,
-            data
+            data,
+            created_at
         ) 
-        VALUES ($1, $2, $3, $4, $5);`,
+        VALUES ($1, $2, $3, $4, $5, NOW());`,
         values: [
             uuid4(),
             req.user.id,
             req.body.type,
-            req.body.price,
+            getRandomInsurancePrice(),
             req.body.data
         ]
     });

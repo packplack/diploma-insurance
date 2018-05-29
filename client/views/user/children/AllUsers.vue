@@ -58,18 +58,6 @@ export default {
 </script>
 
 <style lang="scss">
-
-.vuetalbe {
-    width: 100% !important;
-    background-color: #fff !important;
-    text-align: center;
-    vertical-align: center;
-
-    td, th {
-        border: 1px solid black !important;
-    }
-}
-
 .badge {
     font-size: 15px;
     padding: 10px;

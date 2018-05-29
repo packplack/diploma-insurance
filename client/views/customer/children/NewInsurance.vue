@@ -10,6 +10,10 @@
                     <b-form-radio value="home" class="home"><i class="fas fa-home"></i> жильё</b-form-radio>
                     <b-form-radio value="health" class="health"><i class="fas fa-heartbeat"></i> здоровье</b-form-radio>
                 </b-form-radio-group>
+
+                <b-button class="reset-button" size="lg" type="submit" variant="outline-warning" @click="resetAllFields">
+                    <i class="fas fa-eraser"></i> Сбрость все поля
+                </b-button>
             </div>
 
             <div v-if="type === 'car'" class="card">
@@ -58,7 +62,7 @@
 
                         <b-form-group label="Объем двигателя:">
                             <b-form-input 
-                                type="number"
+                                type="text"
                                 v-model="params.car.engineVolume"
                                 placeholder="Введите объем"
                                 size="md"
@@ -76,6 +80,9 @@
                             required
                         />
                     </b-form-group>
+
+                    <b-alert variant="danger" :show="!!formError">{{ formError }}</b-alert>
+                    <b-alert variant="success" :show="!!formSuccess">{{ formSuccess }}</b-alert>
 
                     <b-form-row>
                         <b-button size="lg" type="submit" variant="success">
@@ -132,6 +139,9 @@
 
                     <b-form-checkbox v-model="params.home.hasSecurityAlarm">Наличие охранной сигнализации</b-form-checkbox>
                     <b-form-checkbox v-model="params.home.hasFireAlarm">Наличие пожарной сигнализации</b-form-checkbox>
+
+                    <b-alert variant="danger" :show="!!formError">{{ formError }}</b-alert>
+                    <b-alert variant="success" :show="!!formSuccess">{{ formSuccess }}</b-alert>
 
                     <b-form-row>
                         <b-button size="lg" type="submit" variant="success">
@@ -209,6 +219,9 @@
                         Должна ли страховка распростроняться на травмы связанные со спортом?
                     </b-form-checkbox>
 
+                    <b-alert variant="danger" :show="!!formError">{{ formError }}</b-alert>
+                    <b-alert variant="success" :show="!!formSuccess">{{ formSuccess }}</b-alert>
+
                     <b-form-row>
                         <b-button size="lg" type="submit" variant="success">
                             <i class="far fa-envelope-open"></i> Создать запрос на страховку
@@ -223,9 +236,13 @@
 </template>
 
 <script>
+import axios from 'axios';
+
 export default {
     data() {
         return {
+            formError: null,
+            formSuccess: null,
             type: '',
             options: {
                 car: {
@@ -313,8 +330,58 @@ export default {
         }
     },
     methods: {
-        createNewInsurance() {
+        async createNewInsurance() {
+            event.preventDefault();
 
+            try {
+                const response = await axios.post('/api/customers/create-insurance', {
+                    type: this.type,
+                    data: this.params[this.type]
+                });
+                this.formSuccess = response.data.result;
+
+                setTimeout(() => {
+                    this.formSuccess = null;
+                }, 5000);
+            } catch (error) {
+                if ('error' in error.response.data) {
+                    this.formError = error.response.data.error;
+                }
+            }
+        },
+        resetAllFields() {
+            this.type = '';
+            this.params = {
+                car: {
+                    bodyType: 'легковой',
+                    manufacturer: '',
+                    model: '',
+                    insuranceType: 'обычное',
+                    year: '',
+                    engineVolume: '',
+                    maxPayout: ''
+                },
+                home: {
+                    buildingType: 'квартира',
+                    region: '',
+                    peopleAmount: '',
+                    area: '',
+                    floors: '',
+                    hasSecurityAlarm: false,
+                    hasFireAlarm: false,
+                },
+                health: {
+                    gender: 'мужской',
+                    region: 'только РБ',
+                    age: '',
+                    profession: '',
+                    experience: '',
+                    illnessAmountLastYear: '',
+                    doctorVisitsLastYear: '',
+                    coverSportIssues: false,
+
+                }
+            };
         }
     }
 }
@@ -328,6 +395,10 @@ export default {
 
 .custom-checkbox {
     margin-bottom: 15px;
+}
+
+.reset-button {
+    margin-bottom: 20px !important;
 }
 
 form {
