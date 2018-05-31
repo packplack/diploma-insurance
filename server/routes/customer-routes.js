@@ -157,4 +157,38 @@ router.post('/create-insurance', async (req, res, next) => {
     res.json({ result: 'Страховка успешно добавлена на рассмотрение.' });
 });
 
+router.post('/perform-payment', async (req, res, next) => {
+    const insuranceToPay = await dbConnection.query({
+        text: `
+        SELECT
+            customer_id
+        FROM insurances
+        WHERE id = $1;`,
+        values: [
+            req.body.id,
+        ]
+    });
+
+    if (!insuranceToPay.rowCount) {
+        return res.status(409).json({ error: 'Данной страховки не существует.'});
+    } else if (insuranceToPay.rows[0]['customer_id'] !== req.user.id) {
+        return res.status(403).json({ error: 'Невозможно оплатить чужую страховку.'});
+    }
+
+    await dbConnection.query({
+        text: `
+        UPDATE insurances
+        SET 
+            is_paid = true, 
+            status = 'paid',
+            paid_at = NOW()
+        WHERE id = $1;`,
+        values: [
+            req.body.id,
+        ]
+    });
+
+    res.json({ result: 'Страховка успешно оплачена.' });
+})
+
 export default router;
