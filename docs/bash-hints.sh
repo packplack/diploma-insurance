@@ -13,3 +13,7 @@ psql postgres://postgres:postgres@localhost:5432/belsky_insurance
 # Table information
 \d table-name
 
+# Move repo to single file
+cat `find client -type f  -not -name "*.png"` >> client.txt
+cat `find server -type f  -not -name "*.png"` >> server.txt # Remove top binary lines
+cat client.txt server.txt build/deploy.sh .babelrc package.json Procfile webpack.config.js >> result.txt

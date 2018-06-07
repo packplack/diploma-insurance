@@ -144,9 +144,36 @@ router.get('/all-insurances', async (req, res, next) => {
         return res.status(403).json({ error: 'У Вас нет прав на данную операцию.' });
     }
 
-    
+    const insurances = await dbConnection.query({
+        text: `
+        SELECT
+            *
+        FROM insurances;`
+    });
 
-    res.json({ permissions, userRoles });
+    res.json(insurances.rows);
+});
+
+router.post('/perform-review', async (req, res, next) => {
+    if (!req.user.permissions.includes('страховки-все')) {
+        return res.status(403).json({ error: 'У Вас нет прав на данную операцию.' });
+    }
+    
+    await dbConnection.query({
+        text: `
+        UPDATE insurances
+        SET 
+            reviewer_id = $1, 
+            status = 'reviewed',
+            reviewed_at = NOW()
+        WHERE id = $2;`,
+        values: [
+            req.user.id,
+            req.body.id
+        ]
+    });
+
+    res.json({ result: 'Страховка успешно рассмотрена (одобрена).' });
 });
 
 

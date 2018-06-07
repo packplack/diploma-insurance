@@ -99,7 +99,7 @@ export default {
                 const response = await axios.post('/api/users/login', this.login);
 
                 this.$store.commit('SAVE_USER', response.data.user);
-                this.$router.push({ name: 'user-cabinet' });
+                this.$router.push({ name: 'страховки-все' });
             } catch (error) {
                 console.log(error);
                 if ('error' in error.response.data) {

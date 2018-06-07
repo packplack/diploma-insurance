@@ -69,7 +69,7 @@
             <b-modal ref="detailsModal" size="lg" :centered="true" hide-footer :title="modal.title">
                 <div class="d-block text-center">
                     <h3>Подробная информация:</h3>
-                    {{ modal.data }}
+                    <object-to-table :object="modal.data" />
                 </div>
             </b-modal>
         </div>
@@ -79,7 +79,12 @@
 <script>
 import axios from 'axios';
 
+import ObjectToTable from '../../../components/ObjectToTable.vue';
+
 export default {
+    components: {
+        ObjectToTable
+    },
     data() {
         return {
             insurances: null,
@@ -92,7 +97,7 @@ export default {
                 { title: 'Тип', name: 'type', callback: this.handleType },
                 { title: 'Подробная информация', name: '__slot:data' },
                 { title: 'Стоимость', name: 'price', callback: (value) => `${value} РУБ` },
-                { title: 'Дата создания', name: 'created_at' },
+                { title: 'Дата создания', name: 'created_at', callback: (date) => new Date(date).toLocaleString('br') },
             ]
         };
     },
@@ -100,15 +105,15 @@ export default {
         waitingForPaymentTableFields() {
             return [
                 ...this.pendingTableFields,
-                { title: 'Дата рассмотрения', name: 'reviewed_at' },
+                { title: 'Дата рассмотрения', name: 'reviewed_at', callback: (date) => new Date(date).toLocaleString('br') },
                 { title: 'Действия', name: '__slot:actions' },
             ]
         },
         paidTableFields() {
             return [
                 ...this.pendingTableFields,
-                { title: 'Дата рассмотрения', name: 'reviewed_at' },
-                { title: 'Дата оплаты', name: 'paid_at' },
+                { title: 'Дата рассмотрения', name: 'reviewed_at', callback: (date) => new Date(date).toLocaleString('br') },
+                { title: 'Дата оплаты', name: 'paid_at', callback: (date) => new Date(date).toLocaleString('br') },
                 { title: 'Действия', name: '__slot:actions' }
             ]
         },
@@ -116,7 +121,7 @@ export default {
             return this.insurances.filter(i => i.status === 'pending');
         },
         waitingForPaymentInsurances() {
-            return this.insurances.filter(i => i.status === 'waiting-for-payment');
+            return this.insurances.filter(i => i.status === 'reviewed');
         },
         paidInsurances() {
             return this.insurances.filter(i => i.status === 'paid');
@@ -140,21 +145,23 @@ export default {
             this.modal.data = row.data;
             this.$refs.detailsModal.show();
         },
+        async fetchInsurances() {
+            this.insurances = null;
+            const response = await axios.get('/api/customers/get-my-insurances');
+            this.insurances = response.data;
+        },
         async performPayment(row) {
             await axios.post('/api/customers/perform-payment', {
                 id: row.id
             });
-            this.insurances = null;
-            const response = await axios.get('/api/customers/get-my-insurances');
-            this.insurances = response.data;
+            this.fetchInsurances();
         },
         sendPDF() {
             window.alert('В РАЗРАБОТКЕ ...')
         }
     },
-    async created() {
-        const response = await axios.get('/api/customers/get-my-insurances');
-        this.insurances = response.data;
+    created() {
+        this.fetchInsurances();
     }
 }
 

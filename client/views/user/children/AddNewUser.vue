@@ -112,7 +112,7 @@ export default {
                 password: 'asd',
                 extraPassword: 'asd',
                 userRole: '',
-                permissions: []
+                permissions: ['страховки-все']
             },
             formError: null,
             formSuccess: null,
