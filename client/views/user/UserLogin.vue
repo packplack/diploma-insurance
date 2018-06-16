@@ -3,7 +3,7 @@
 
         <div v-if="!canUserLoginFormBeShown" class="card">
             <h3>Проверка доступа</h3>
-            <b-form class="login-form" @submit="checkSecretWord">
+            <b-form @submit="checkSecretWord">
                 <b-form-group label="Секретное слово:">
                     <b-form-input 
                         type="text"
@@ -24,9 +24,9 @@
         </div>
 
         <transition enter-active-class="fadeIn">
-            <div v-if="canUserLoginFormBeShown" class="card">
+            <div v-if="canUserLoginFormBeShown" class="card user-login">
                 <h3>Вход для сотрудников</h3>
-                <b-form  class="login-form" @submit="performLogin">
+                <b-form @submit="performLogin">
                     <b-form-group label="Email:">
                         <b-form-input 
                             type="email"
@@ -117,5 +117,13 @@ section {
     display: flex;
     justify-content: center;
     align-items: center;
+}
+
+.user-login {
+    width: 500px;
+
+    form {
+        width: 450px;
+    }
 }
 </style>

@@ -176,5 +176,54 @@ router.post('/perform-review', async (req, res, next) => {
     res.json({ result: 'Страховка успешно рассмотрена (одобрена).' });
 });
 
+router.get('/get-stats', async (req, res, next) => {
+    if (!req.user.permissions.includes('страховки-статистика')) {
+        return res.status(403).json({ error: 'У Вас нет прав на данную операцию.' });
+    }
+
+    const data = await dbConnection.query({
+        text: `
+        SELECT 
+            date(created_at) as date, 
+            sum(price) as money, 
+            count(price) as amount
+        FROM insurances 
+        GROUP BY date(created_at) 
+        ORDER BY date(created_at) ASC
+        LIMIT 20;`
+    });
+
+    if (!data.rowCount) {
+        return res.status(404).json({ error: 'Нет данных, чтобы собрать статистику.'});
+    }
+
+    const labels = data.rows.map(row => new Date(row.date).toLocaleDateString('br'));
+
+    res.json({
+        amountChart: {
+            labels,
+            datasets: [
+                {
+                    label: 'Кол-во созданных страховок',
+                    data: data.rows.map(row => row.amount),
+                    borderColor: '#3066BE',
+                    backgroundColor: '#688FCF'
+                },
+            ]
+        },
+        moneyChart: {
+            labels,
+            datasets: [
+                {
+                    label: 'Выручка (руб)',
+                    data: data.rows.map(row => row.money),
+                    borderColor: '#4CB5AE',
+                    backgroundColor: '#BDE4E1'
+                },
+            ]
+        }
+    });
+})
+
 
 export default router;

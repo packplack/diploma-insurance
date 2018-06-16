@@ -69,7 +69,9 @@ export default {
 
 <style lang="scss" scoped>
 .users-card {
-    width: 80%;
+    width: auto;
+    max-width: 1200px;
+    margin: 20px;
     padding-left: 20px;
     padding-right: 20px;
 

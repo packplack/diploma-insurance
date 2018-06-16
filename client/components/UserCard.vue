@@ -12,11 +12,11 @@
             <td class="key-cell">Номер телефона:</td>
             <td>{{ userData.phoneNumber }}</td>
         </tr>
-        <tr>
+        <tr v-if="'userRole' in userData">
             <td class="key-cell">Роль пользователя:</td>
             <td>{{ userData.userRole }}</td>
         </tr>
-        <tr>
+        <tr v-if="'permissions' in userData">
             <td class="key-cell">Права:</td>
             <td>
                 <div class="permissions">

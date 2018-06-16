@@ -391,6 +391,7 @@ export default {
 <style lang="scss" scoped>
 .card {
     width: 550px;
+    margin: 20px 0;
 }
 
 .custom-checkbox {

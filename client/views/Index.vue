@@ -275,7 +275,7 @@ section {
     align-items: flex-start;
 
     .card {
-        width: 600px;
+        width: 500px;
     }
 }
 
